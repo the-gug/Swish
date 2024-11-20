@@ -9,11 +9,15 @@ RUN mkdir /build
 RUN if [ "$(dpkg --print-architecture)" = "armhf" ]; then \
        . /root/.cargo/env && rustup target add armv7-unknown-linux-musleabihf; \
        ln -svf /usr/bin/ar /usr/bin/arm-linux-musleabihf-ar; \
+       ln -svf /usr/bin/strip /usr/bin/arm-linux-musleabihf-strip; \
+       ln -svf /usr/bin/ranlib /usr/bin/arm-linux-musleabihf-ranlib; \
        echo "armv7-unknown-linux-musleabihf" > /build/_target ; \
     fi
 RUN if [ "$(dpkg --print-architecture)" = "arm64" ]; then \
        . /root/.cargo/env && rustup target add aarch64-unknown-linux-musl; \
        ln -svf /usr/bin/ar /usr/bin/aarch64-linux-musl-ar; \
+       ln -svf /usr/bin/strip /usr/bin/aarch64-linux-musl-strip; \
+       ln -svf /usr/bin/ranlib /usr/bin/aarch64-linux-musl-ranlib; \
        echo "aarch64-unknown-linux-musl" > /build/_target ; \
     fi
 RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
