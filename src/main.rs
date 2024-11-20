@@ -6,6 +6,7 @@
 mod api;
 mod errors;
 mod swissfiles;
+use std::env;
 use std::path::PathBuf;
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
@@ -42,6 +43,10 @@ struct Cli {
     #[arg(short, long, value_name = "output")]
     output: Option<String>,
 
+    /// Use insecure ssl connection
+    #[arg(short, long, value_name = "insecure")]
+    insecure: bool,
+
     /// Enable verbose mode
     #[arg(short, long)]
     verbose: bool,
@@ -63,6 +68,12 @@ fn main() -> Result<(), SwishError> {
 
     let arg = cli.file;
 
+    let insecure = cli.insecure;
+    // Set the insecure flag as an environment variable
+    if insecure {
+        env::set_var("CURL_CA_BUNDLE", "");
+        env::set_var("CURL_INSECURE", "1");
+    }
 
     //check if the arg is a link
     if is_swisstransfer_link(&arg) {
