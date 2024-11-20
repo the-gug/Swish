@@ -71,7 +71,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile-integration
+          file: ./Dockerfile
           platforms: linux/arm64, linux/amd64, linux/armhf
           cache-from: type=gha
           cache-to: type=gha,mode=max
