@@ -129,6 +129,11 @@ pub fn new_easy2_upload(
         headers.append(header.as_str())?;
     }
 
+    if env::var("CURL_INSECURE") == Ok("1".to_string()) {
+        let _ = easy2.ssl_verify_host(false);
+        let _ = easy2.ssl_verify_peer(false);
+    }
+
     easy2.url(&url)?;
     easy2.http_headers(headers)?;
     easy2.post(true)?;
