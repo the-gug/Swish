@@ -152,9 +152,3 @@ jobs:
         continue-on-error: true
         with:
           subject-path: '/tmp/amd64/swish_linux_amd64_static_${{ github.event.release.tag_name }},/tmp/arm64/swish_linux_arm64_static_${{ github.event.release.tag_name }},/tmp/armhf/swish_linux_armhf_static_${{ github.event.release.tag_name }}'
-
-        uses: actions/attest-build-provenance@v1
-        if: ${{ env.DOCKER_ARMHF_EXPERIMENTAL == 'enabled' }}
-        continue-on-error: true
-        with:
-          subject-path: '/tmp/armhf/linux_static_${{ github.event.release.tag_name }}_armhf.zip, /tmp/armhf/rustdesk-server-hbbr_${{ github.event.release.tag_name }}_armhf.deb, /tmp/armhf/rustdesk-server-hbbs_${{ github.event.release.tag_name }}_armhf.deb, /tmp/armhf/rustdesk-server-utils_${{ github.event.release.tag_name }}_armhf.deb, /tmp/armhf/zip/hbbs, /tmp/armhf/zip/hbbr, /tmp/armhf/zip/rustdesk-utils'
