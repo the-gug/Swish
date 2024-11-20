@@ -25,6 +25,7 @@ Options:
   -n, --number-download <250>  Define the max number of downloads for the file(s) uploaded
   -d, --duration <30>          Define the number of days the file(s) will be available for download
   -o, --output <output>        Define an output directory for the downloaded files
+  -i, --insecure               Use insecure ssl connection
   -v, --verbose                Enable verbose mode
   -h, --help                   Print help
   -V, --version                Print version
