@@ -76,7 +76,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           push: true
-          tags: ${{ steps.metaintegration.outputs.tags }}
+          tags: ${{ steps.metaintegration.outputs.tags }},latest
           labels: ${{ steps.metaintegration.outputs.labels }}
 
       - name: Pull and extract files from Docker image (amd64)
