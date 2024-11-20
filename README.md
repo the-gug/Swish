@@ -59,6 +59,10 @@ I strongly recommend you to encrypt your file before uploading it to any cloud s
 
 When uploading many times the ***same*** file, it seems that infomaniaks servers flags you as suspicous traffic and you won't be able to upload for a while. It seems to be linked to your IP address, no extensive testing has been done. Use the debug mode to see the error message. :warning:
 
+***SSL error***
+
+If the local cURL library installation does not have the necessary certificates, the tool will not be able to connect to the server. You can use the insecure flag to bypass the SSL verification. :warning:
+
 ## Contributing
 
 If a developer who truly has the skills and doesn't face the same skill issues as me wants to contribute to this project, feel free to do so. PRs and stuff. :handshake:
