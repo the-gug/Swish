@@ -7,7 +7,7 @@ This project is not affiliated with Infomaniak and is not an official tool. :war
 
 ## Installation
 
-All the binaries are available in the [releases](https://github.com/Blutsh/Swish/releases) section. :inbox_tray:
+All the binaries are available in the [releases](https://github.com/sctg-development/Swish/releases) section. :inbox_tray:
 
 Download the binary for your platform and add it to your PATH. :arrow_down:
 
