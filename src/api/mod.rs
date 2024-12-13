@@ -11,6 +11,7 @@ use handlers::DataHandler;
 use handlers::DownloadHandler;
 use handlers::UploadHandler;
 use indicatif::{ProgressBar, ProgressStyle};
+
 use log;
 
 const DEFAULT_HEADERS: &[&str; 3] = &[
@@ -19,15 +20,22 @@ const DEFAULT_HEADERS: &[&str; 3] = &[
     "Referer: swish/1.0.1",
 ];
 
+const CERT_BUNDLE: &[u8] = include_bytes!("../../caroot/cacert.pem");
+
 fn new_easy2_data(
     url: String,
     custom_headers: Option<Vec<String>>,
     post: bool,
 ) -> Result<Easy2<DataHandler>, curl::Error> {
     let mut easy2 = Easy2::new(DataHandler { data: Vec::new() });
+    
     if env::var("CURL_INSECURE") == Ok("1".to_string()) {
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
+    }else{
+        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            log::error!("Failed to load cacert.pem");
+        }
     }
 
 
@@ -132,6 +140,10 @@ pub fn new_easy2_upload(
     if env::var("CURL_INSECURE") == Ok("1".to_string()) {
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
+    }else{
+        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            log::error!("Failed to load cacert.pem");
+        }
     }
 
     easy2.url(&url)?;

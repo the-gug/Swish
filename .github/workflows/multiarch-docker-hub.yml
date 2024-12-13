@@ -114,19 +114,21 @@ jobs:
           mv swish /tmp/armhf/swish_linux_armhf_static_${{ github.event.release.tag_name }}
 
       - name: Upload Release
+        continue-on-error: true
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
             ls -lR
-            gh release upload ${{ github.event.release.tag_name }} /tmp/amd64/swish_linux_amd64_static_${{ github.event.release.tag_name }}
-            gh release upload ${{ github.event.release.tag_name }} /tmp/arm64/swish_linux_arm64_static_${{ github.event.release.tag_name }}
+            gh release upload ${{ github.event.release.tag_name }} /tmp/amd64/swish_linux_amd64_static_${{ github.event.release.tag_name }} --clobber
+            gh release upload ${{ github.event.release.tag_name }} /tmp/arm64/swish_linux_arm64_static_${{ github.event.release.tag_name }} --clobber
 
       - name: Upload armhf release
+        continue-on-error: true
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         if: ${{ env.DOCKER_ARMHF_EXPERIMENTAL == 'enabled' }}
         run: |
-            gh release upload ${{ github.event.release.tag_name }} /tmp/armhf/swish_linux_armhf_static_${{ github.event.release.tag_name }}
+            gh release upload ${{ github.event.release.tag_name }} /tmp/armhf/swish_linux_armhf_static_${{ github.event.release.tag_name }} --clobber
 
       - name: Attest release
         uses: actions/attest-build-provenance@v1
