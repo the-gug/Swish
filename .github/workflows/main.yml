@@ -19,18 +19,26 @@ jobs:
           - build: linux
             os: ubuntu-latest
             target: x86_64-unknown-linux-musl
+            arch: amd64
+            family: linux
             
           - build: windows
             os: windows-latest
             target: x86_64-pc-windows-msvc
+            arch: amd64
+            family: windows
 
           - build: macos-arm64
             os: macos-latest
             target: aarch64-apple-darwin
+            arch: arm64
+            family: macos
 
           - build: macos-x86_64
             os: macos-latest
             target: x86_64-apple-darwin
+            arch: amd64
+            family: macos
 
     steps:
       - name: Checkout
@@ -61,17 +69,11 @@ jobs:
           dirname="$binary_name-${{ env.VERSION }}-${{ matrix.target }}"
           mkdir "$dirname"
           if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            mv "target/${{ matrix.target }}/release/$binary_name.exe" "$dirname"
+            cp "target/${{ matrix.target }}/release/$binary_name.exe" "swish_${{ matrix.family }}_${{ matrix.arch }}_${{ env.VERSION }}.exe"
+            echo "ASSET=swish_${{ matrix.family }}_${{ matrix.arch }}_${{ env.VERSION }}.exe" >> $GITHUB_ENV
           else
-            mv "target/${{ matrix.target }}/release/$binary_name" "$dirname"
-          fi
-
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            7z a "$dirname.zip" "$dirname"
-            echo "ASSET=$dirname.zip" >> $GITHUB_ENV
-          else
-            tar -czf "$dirname.tar.gz" "$dirname"
-            echo "ASSET=$dirname.tar.gz" >> $GITHUB_ENV
+            cp "target/${{ matrix.target }}/release/$binary_name" "swish_${{ matrix.family }}_${{ matrix.arch }}_${{ env.VERSION }}"
+            echo "ASSET=swish_${{ matrix.family }}_${{ matrix.arch }}_${{ env.VERSION }}" >> $GITHUB_ENV 
           fi
 
       - name: Release
