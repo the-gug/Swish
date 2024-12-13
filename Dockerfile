@@ -25,6 +25,7 @@ RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
        echo "x86_64-unknown-linux-musl" > /build/_target ; \
     fi
 COPY src /build/src
+COPY build.rs /build/build.rs
 COPY Cargo.toml /build/Cargo.toml
 COPY Cargo.lock /build/Cargo.lock
 
