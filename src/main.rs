@@ -43,9 +43,12 @@ struct Cli {
     #[arg(short, long, value_name = "output")]
     output: Option<String>,
 
-    /// Use insecure ssl connection
+    /// Use insecure tls connection
     #[arg(short, long, value_name = "insecure")]
     insecure: bool,
+
+    #[arg(short, long, value_name = "dsystem-ca-bundle", help = env!("HELP_CA_ROOT") )]
+    system_ca_bundle: bool,
 
     /// Enable verbose mode
     #[arg(short, long)]
@@ -73,6 +76,12 @@ fn main() -> Result<(), SwishError> {
     if insecure {
         env::set_var("CURL_CA_BUNDLE", "");
         env::set_var("CURL_INSECURE", "1");
+    }
+
+    let system_ca_bundle = cli.system_ca_bundle;
+    // Set the system CA bundle flag as an environment variable
+    if system_ca_bundle {
+        env::set_var("CURL_USE_SYSTEM_CA_BUNDLE", "1");
     }
 
     //check if the arg is a link

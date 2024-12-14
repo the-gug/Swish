@@ -1,8 +1,8 @@
 /// Man... told you this was a mess
 use curl::easy::Easy2;
+use std::env;
 use std::fs::File;
 use std::sync::{Arc, Mutex};
-use std::env;
 pub mod chunks;
 pub mod handlers;
 use crate::errors::SwishError;
@@ -28,16 +28,17 @@ fn new_easy2_data(
     post: bool,
 ) -> Result<Easy2<DataHandler>, curl::Error> {
     let mut easy2 = Easy2::new(DataHandler { data: Vec::new() });
-    
+
     if env::var("CURL_INSECURE") == Ok("1".to_string()) {
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
-    }else{
-        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
-            log::error!("Failed to load cacert.pem");
+    } else {
+        if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
+            if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+                log::error!("Failed to load cacert.pem");
+            }
         }
     }
-
 
     let mut merged_headers: Vec<String> = DEFAULT_HEADERS.iter().map(|x| x.to_string()).collect();
 
@@ -140,9 +141,11 @@ pub fn new_easy2_upload(
     if env::var("CURL_INSECURE") == Ok("1".to_string()) {
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
-    }else{
-        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
-            log::error!("Failed to load cacert.pem");
+    } else {
+        if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
+            if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+                log::error!("Failed to load cacert.pem");
+            }
         }
     }
 
