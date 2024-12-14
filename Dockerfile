@@ -27,7 +27,7 @@ RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
 COPY src /build/src
 COPY build.rs /build/build.rs
 COPY Cargo.toml /build/Cargo.toml
-
+RUN mkdir -p /build/caroot
 # Set up cargo config to use git tool
 # this workaround is needed because QEMU emulating 32 bits platfom on 64 bits host
 # see https://github.com/rust-lang/cargo/issues/8719
