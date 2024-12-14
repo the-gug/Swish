@@ -73,10 +73,11 @@ This project is licensed under the GPL-3.0 License - see the [LICENSE](LICENSE) 
 
 ## Contact
 
-You can contact me at compote.interroge.0i@icloud.com :email:
+You can contact [Blutsh](https://github.com/Blutsh) at compote.interroge.0i@icloud.com :email:
 
 ## Donate
-I drank some during the project, it would be nice if you could &nbsp;&nbsp;<a href='https://ko-fi.com/Y8Y7ZK4DS' target='_blank'><img height='36' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi3.png?v=3' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+[Blutsh](https://github.com/Blutsh) drank some during the project, it would be nice if you could help him &nbsp;&nbsp;[![Buy a coffee for Blutsh](https://img.shields.io/badge/Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/Y8Y7ZK4DS)
 
 
 
