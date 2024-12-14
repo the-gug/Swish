@@ -19,14 +19,17 @@ permissions:
   packages: write
 
 on:
-  release:
-  workflow_dispatch:
-  workflow_call:
-    secrets:
-      DOCKER_USERNAME:
-        required: true
-      DOCKER_PASSWORD:
-        required: true
+  push:
+    tags:
+      - "[0-9]+.[0-9]+.[0-9]+"
+  # release:
+  # workflow_dispatch:
+  # workflow_call:
+  #   secrets:
+  #     DOCKER_USERNAME:
+  #       required: true
+  #     DOCKER_PASSWORD:
+  #       required: true
 
 jobs:
   push_to_registry:
