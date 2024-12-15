@@ -14,7 +14,7 @@ RUN if [ "$(dpkg --print-architecture)" = "armhf" ]; then \
        ln -svf /usr/bin/strip /usr/bin/arm-linux-musleabihf-strip; \
        ln -svf /usr/bin/ranlib /usr/bin/arm-linux-musleabihf-ranlib; \
        cp -v /usr/lib/gcc/arm-linux-gnueabihf/11/include/stddef.h /usr/include/; \
-       ln -svf /usr/include/arm-linux-gnueabihf/bits /usr/include/bits; \
+       cp -av /usr/include/arm-linux-musleabihf/bits /usr/include/; \
        ln -svf /usr/include/arm-linux-gnueabihf/asm /usr/include/asm; \
        ln -svf /usr/include/arm-linux-gnueabihf/sys /usr/include/sys; \
        ln -svf /usr/include/arm-linux-gnueabihf/curl /usr/include/curl; \
