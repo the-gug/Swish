@@ -18,6 +18,7 @@ RUN if [ "$(dpkg --print-architecture)" = "armhf" ]; then \
        ln -svf /usr/include/arm-linux-gnueabihf/asm /usr/include/asm; \
        ln -svf /usr/include/arm-linux-gnueabihf/sys /usr/include/sys; \
        ln -svf /usr/include/arm-linux-gnueabihf/curl /usr/include/curl; \
+       ln -svf /usr/include/arm-linux-gnueabihf/gnu /usr/include/gnu; \
        echo "armv7-unknown-linux-musleabihf" > /build/_target ; \
     fi
 RUN if [ "$(dpkg --print-architecture)" = "arm64" ]; then \
