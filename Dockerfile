@@ -2,7 +2,9 @@
 # Copyright 2024 SCTG Development - Ronan LE MEILLAT
 # SPDX-License-Identifier: AGPL-3.0-or-later
 FROM ubuntu:jammy AS builder
-RUN apt-get update && apt-get install -y curl build-essential debhelper devscripts pkg-config libssl-dev libc-dev libstdc++-dev zip git libcurl4-openssl-dev musl-dev musl-tools cmake libclang-dev g++
+RUN apt-get update && apt-get install -y curl build-essential debhelper devscripts \
+                pkg-config libssl-dev libc-dev libstdc++-11-dev libgcc-11-dev \
+                zip git libcurl4-openssl-dev musl-dev musl-tools cmake libclang-dev g++
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y 
 RUN echo $(dpkg --print-architecture)
 RUN mkdir /build
