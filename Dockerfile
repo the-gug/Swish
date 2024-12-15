@@ -39,9 +39,9 @@ RUN --mount=type=tmpfs,target=/root/.cargo export TARGET=$(cat /build/_target) \
     && cp -av /tmp/.cargo/* /root/.cargo/ && ls -lR /root/.cargo \
     && if [ ! -f /root/.cargo/config.toml ]; then \
         echo "" > /root/.cargo/config.toml; \
-    fi && \
+    fi \
     && if [ "$(dpkg --print-architecture)" = "armhf" ]; then \
-        export CFLAFS+=" -I/usr/include/arm-linux-musleabihf -I/usr/lib/gcc/arm-linux-gnueabihf/11/include "; \
+        export CFLAGS+=" -I/usr/include/arm-linux-musleabihf -I/usr/lib/gcc/arm-linux-gnueabihf/11/include "; \
     fi && \
     awk 'BEGIN{net_section=0;git_fetch_found=0;printed=0}/^\[net\]/{net_section=1;print;next}/^\[/{if(net_section&&!git_fetch_found){print "git-fetch-with-cli = true";printed=1}net_section=0;print;next}net_section&&/^git-fetch-with-cli\s*=/{print "git-fetch-with-cli = true";git_fetch_found=1;next}{print}END{if(!printed&&!git_fetch_found){if(!net_section)print "\n[net]";print "git-fetch-with-cli = true"}}' /root/.cargo/config.toml > /root/.cargo/config.tmp && \
     mv /root/.cargo/config.tmp /root/.cargo/config.toml \
