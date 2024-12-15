@@ -13,6 +13,7 @@ RUN if [ "$(dpkg --print-architecture)" = "armhf" ]; then \
        ln -svf /usr/bin/ar /usr/bin/arm-linux-musleabihf-ar; \
        ln -svf /usr/bin/strip /usr/bin/arm-linux-musleabihf-strip; \
        ln -svf /usr/bin/ranlib /usr/bin/arm-linux-musleabihf-ranlib; \
+       cp -v /usr/lib/gcc/arm-linux-gnueabihf/11/include/stddef.h /usr/include/; \
        echo "armv7-unknown-linux-musleabihf" > /build/_target ; \
     fi
 RUN if [ "$(dpkg --print-architecture)" = "arm64" ]; then \
