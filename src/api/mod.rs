@@ -11,7 +11,7 @@ use handlers::DataHandler;
 use handlers::DownloadHandler;
 use handlers::UploadHandler;
 use indicatif::{ProgressBar, ProgressStyle};
-use crate::ca_bundle::get_cert_bundle;
+use crate::ca_bundle::CERT_BUNDLE;
 
 use log;
 
@@ -36,8 +36,8 @@ fn new_easy2_data(
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
     } else {
-        if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
-            if easy2.ssl_cainfo_blob(get_cert_bundle().as_bytes()) != Ok(()) {
+        if env::var("CURL_USE_INTERNAL_CA_BUNDLE") == Ok("1".to_string()) {
+            if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
                 log::error!("Failed to load cacert.pem");
             }
         }
@@ -89,6 +89,12 @@ pub fn new_easy2_download(
 
     if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
         let _ = easy2.verbose(true);
+    }
+
+    if env::var("CURL_USE_INTERNAL_CA_BUNDLE") == Ok("1".to_string()) {
+        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            log::error!("Failed to load cacert.pem");
+        }
     }
     
     let mut merged_headers: Vec<String> = DEFAULT_HEADERS.iter().map(|x| x.to_string()).collect();
@@ -153,8 +159,8 @@ pub fn new_easy2_upload(
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
     } else {
-        if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
-            if easy2.ssl_cainfo_blob(get_cert_bundle().as_bytes()) != Ok(()) {
+        if env::var("CURL_USE_INTERNAL_CA_BUNDLE") == Ok("1".to_string()) {
+            if easy2.ssl_cainfo_blob(&CERT_BUNDLE) != Ok(()) {
                 log::error!("Failed to load cacert.pem");
             }
         }
@@ -175,6 +181,12 @@ pub fn get(url: &str, additional_headers: Option<Vec<String>>) -> Result<String,
 
     if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
         let _ = easy2.verbose(true);
+    }
+
+    if env::var("CURL_USE_INTERNAL_CA_BUNDLE") == Ok("1".to_string()) {
+        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            log::error!("Failed to load cacert.pem");
+        }
     }
 
     log::debug!(
@@ -219,6 +231,13 @@ pub fn post(
     if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
         let _ = easy2.verbose(true);
     }
+
+    if env::var("CURL_USE_INTERNAL_CA_BUNDLE") == Ok("1".to_string()) {
+        if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            log::error!("Failed to load cacert.pem");
+        }
+    }
+
     easy2.post_fields_copy(&body)?;
 
     loop {

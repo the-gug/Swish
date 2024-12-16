@@ -100,7 +100,9 @@ fn main() -> Result<(), SwishError> {
     let system_ca_bundle = cli.system_ca_bundle;
     // Set the system CA bundle flag as an environment variable
     if system_ca_bundle {
-        env::set_var("CURL_USE_SYSTEM_CA_BUNDLE", "1");
+        env::set_var("CURL_USE_INTERNAL_CA_BUNDLE", "0");
+    } else {
+        env::set_var("CURL_USE_INTERNAL_CA_BUNDLE", "1");
     }
 
     //check if the arg is a link
