@@ -25,8 +25,11 @@ Options:
   -n, --number-download <250>  Define the max number of downloads for the file(s) uploaded
   -d, --duration <30>          Define the number of days the file(s) will be available for download
   -o, --output <output>        Define an output directory for the downloaded files
-  -i, --insecure               Use insecure ssl connection
+  -i, --insecure               Use insecure tls connection
+  -c, --ca-root                Show the bundled ca root
+  -s, --system-ca-bundle       If not set, the bundled cacert.pem from Mozilla (Tue Nov 26 13:58:25 2024 GMT) will be used.
   -v, --verbose                Enable verbose mode
+  -w, --curl-verbose           Enable curl verbose mode
   -h, --help                   Print help
   -V, --version                Print version
 ```
