@@ -11,6 +11,7 @@ use handlers::DataHandler;
 use handlers::DownloadHandler;
 use handlers::UploadHandler;
 use indicatif::{ProgressBar, ProgressStyle};
+use crate::ca_bundle::get_cert_bundle;
 
 use log;
 
@@ -20,7 +21,6 @@ const DEFAULT_HEADERS: &[&str; 3] = &[
     "Referer: swish/1.0.1",
 ];
 
-const CERT_BUNDLE: &[u8] = include_bytes!("../../caroot/cacert.pem");
 
 fn new_easy2_data(
     url: String,
@@ -28,13 +28,16 @@ fn new_easy2_data(
     post: bool,
 ) -> Result<Easy2<DataHandler>, curl::Error> {
     let mut easy2 = Easy2::new(DataHandler { data: Vec::new() });
+    if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
+        let _ = easy2.verbose(true);
+    }
 
     if env::var("CURL_INSECURE") == Ok("1".to_string()) {
         let _ = easy2.ssl_verify_host(false);
         let _ = easy2.ssl_verify_peer(false);
     } else {
         if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
-            if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            if easy2.ssl_cainfo_blob(get_cert_bundle().as_bytes()) != Ok(()) {
                 log::error!("Failed to load cacert.pem");
             }
         }
@@ -84,6 +87,10 @@ pub fn new_easy2_download(
         progress: Arc::new(Mutex::new(progress_bar)),
     });
 
+    if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
+        let _ = easy2.verbose(true);
+    }
+    
     let mut merged_headers: Vec<String> = DEFAULT_HEADERS.iter().map(|x| x.to_string()).collect();
 
     //add additional headers if any
@@ -120,6 +127,10 @@ pub fn new_easy2_upload(
         progress: Arc::new(Mutex::new(progress_bar)),
     });
 
+    if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
+        let _ = easy2.verbose(true);
+    }
+
     let mut merged_headers: Vec<String> = DEFAULT_HEADERS.iter().map(|x| x.to_string()).collect();
 
     // add headers
@@ -143,7 +154,7 @@ pub fn new_easy2_upload(
         let _ = easy2.ssl_verify_peer(false);
     } else {
         if env::var("CURL_USE_SYSTEM_CA_BUNDLE") == Ok("1".to_string()) {
-            if easy2.ssl_cainfo_blob(CERT_BUNDLE) != Ok(()) {
+            if easy2.ssl_cainfo_blob(get_cert_bundle().as_bytes()) != Ok(()) {
                 log::error!("Failed to load cacert.pem");
             }
         }
@@ -160,7 +171,11 @@ pub fn new_easy2_upload(
 
 pub fn get(url: &str, additional_headers: Option<Vec<String>>) -> Result<String, SwishError> {
     let additional_headers2 = additional_headers.clone();
-    let easy2 = new_easy2_data(url.to_string(), additional_headers, false)?;
+    let mut easy2 = new_easy2_data(url.to_string(), additional_headers, false)?;
+
+    if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
+        let _ = easy2.verbose(true);
+    }
 
     log::debug!(
         "Sending get request to: {} \n with headers {}",
@@ -201,6 +216,9 @@ pub fn post(
     let mut retries = 0;
 
     let mut easy2 = new_easy2_data(url.to_string(), additional_headers, true)?;
+    if env::var("CURL_VERBOSE") == Ok("1".to_string()) {
+        let _ = easy2.verbose(true);
+    }
     easy2.post_fields_copy(&body)?;
 
     loop {

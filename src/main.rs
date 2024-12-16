@@ -6,12 +6,14 @@
 mod api;
 mod errors;
 mod swissfiles;
+mod ca_bundle;
 use std::env;
 use std::path::PathBuf;
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
 use swissfiles::uploadparameters::UploadParameters;
 use swissfiles::Swissfiles;
+use ca_bundle::get_cert_bundle;
 
 use clap::Parser;
 use errors::SwishError;
@@ -44,15 +46,23 @@ struct Cli {
     output: Option<String>,
 
     /// Use insecure tls connection
-    #[arg(short, long, value_name = "insecure")]
+    #[arg(short, long, value_name = "file")]
     insecure: bool,
 
-    #[arg(short, long, value_name = "dsystem-ca-bundle", help = env!("HELP_CA_ROOT") )]
+    /// Show the bundled ca root
+    #[arg(short, long)]
+    ca_root: bool,
+
+    #[arg(short, long, value_name = "file", help = env!("HELP_CA_ROOT") )]
     system_ca_bundle: bool,
 
     /// Enable verbose mode
     #[arg(short, long)]
     verbose: bool,
+
+    /// Enable curl verbose mode
+    #[arg(short = 'w', long)]
+    curl_verbose: bool,
 }
 
 fn main() -> Result<(), SwishError> {
@@ -66,6 +76,15 @@ fn main() -> Result<(), SwishError> {
     } else {
         logger = logger.with_level(LevelFilter::Info);
     }
+
+    if cli.curl_verbose {
+        env::set_var("CURL_VERBOSE", "1");
+    }
+    if cli.ca_root {
+        println!("{}", get_cert_bundle());
+        return Ok(());
+    }
+
     logger.init().unwrap();
 
 
