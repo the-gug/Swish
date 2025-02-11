@@ -1,19 +1,18 @@
-/// Hey there! 
+/// Hey there!
 /// As you can see, Im a real noob in Rust and dev in general, so please be kind with me.
 /// I hope someone with no skill issues could refactor the wole code base and make it readable and maintainable.
 /// Sorry for the mess x) at least it seems to work for now \o/
-
 mod api;
+mod ca_bundle;
 mod errors;
 mod swissfiles;
-mod ca_bundle;
-use std::env;
-use std::path::PathBuf;
+use ca_bundle::get_cert_bundle;
 use log::LevelFilter;
 use simple_logger::SimpleLogger;
+use std::path::PathBuf;
+use std::{env, os};
 use swissfiles::uploadparameters::UploadParameters;
 use swissfiles::Swissfiles;
-use ca_bundle::get_cert_bundle;
 
 use clap::Parser;
 use errors::SwishError;
@@ -28,6 +27,10 @@ struct Cli {
     /// Sets the password for the file(s) downloaded / uploaded
     #[arg(short, long, value_name = "password")]
     password: Option<String>,
+
+    /// Define the password for derivating the AES encryption key for the file(s) uploaded (will be uploaded as a 7z encrypted)
+    #[arg(short = 'a', long, value_name = "aes")]
+    aes_password: Option<String>,
 
     /// Define the message for the file(s) uploaded
     #[arg(short, long, value_name = "Hello World")]
@@ -66,7 +69,6 @@ struct Cli {
 }
 
 fn main() -> Result<(), SwishError> {
-
     let cli = Cli::parse();
 
     // Initialize logger
@@ -86,7 +88,6 @@ fn main() -> Result<(), SwishError> {
     }
 
     logger.init().unwrap();
-
 
     let arg = cli.file;
 
@@ -117,7 +118,25 @@ fn main() -> Result<(), SwishError> {
     }
     //check if the arg is a path
     if path_exists(&arg) {
-        let path = PathBuf::from(&arg);
+        let mut path = PathBuf::from(&arg);
+
+        if let Some(aes_key) = cli.aes_password.clone() {
+            // Create a temporary 7z archive using the standard os temp directory and suffixing the file name with .7z
+            let original_extension = path.extension().unwrap_or_default().to_str().unwrap_or("");
+            let mut extension = String::new();
+            extension = if original_extension.len() == 0 {
+                format!("{}7z",original_extension)
+            }else{
+                format!("{}.7z",original_extension)
+            };
+            let compressed_file = env::temp_dir()
+                .join(&arg)
+                .with_extension(std::ffi::OsStr::new(&extension));
+            sevenz_rust::compress_to_path_encrypted(path, compressed_file.clone(), aes_key.as_str().into())
+                .expect("compress ok");
+            path = compressed_file.clone();
+        }
+
         let mut params = UploadParameters::default();
 
         if let Some(password) = cli.password {
@@ -136,9 +155,14 @@ fn main() -> Result<(), SwishError> {
             params.duration = duration.parse().unwrap();
         }
 
-        let local_files = Swissfiles::new_localfiles(path, &params)?;
+        let local_files = Swissfiles::new_localfiles(path.clone(), &params)?;
         let download_link = local_files.upload()?;
         println!("Download link: {}", download_link);
+
+        if cli.aes_password.is_some() {
+            // Delete the temporary 7z archive
+            std::fs::remove_file(path).expect("remove ok");
+        }
 
         return Ok(());
     }
@@ -209,15 +233,22 @@ mod tests {
         let number = "251";
         assert_eq!(
             validate_number_download(number),
-            Err(String::from("Number of downloads must be between 1 and 250"))
+            Err(String::from(
+                "Number of downloads must be between 1 and 250"
+            ))
         );
         let number = "0";
         assert_eq!(
             validate_number_download(number),
-            Err(String::from("Number of downloads must be between 1 and 250"))
+            Err(String::from(
+                "Number of downloads must be between 1 and 250"
+            ))
         );
         let number = "a";
-        assert_eq!(validate_number_download(number), Err(String::from("Must be a valid number")));
+        assert_eq!(
+            validate_number_download(number),
+            Err(String::from("Must be a valid number"))
+        );
     }
 
     #[test]
@@ -235,7 +266,9 @@ mod tests {
             Err(String::from("Duration must be 1, 7, 15 or 30"))
         );
         let duration = "a";
-        assert_eq!(validate_duration(duration), Err(String::from("Must be a valid number")));
+        assert_eq!(
+            validate_duration(duration),
+            Err(String::from("Must be a valid number"))
+        );
     }
-  
 }

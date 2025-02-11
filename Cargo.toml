@@ -1,6 +1,6 @@
 [package]
 name = "swish"
-version = "1.0.6"
+version = "1.0.7"
 edition = "2021"
 build = "build.rs"
 
@@ -19,6 +19,7 @@ openssl-sys = { version = "0.9", features = ["vendored"] }
 rustls = "0.23"
 reqwest = { version = "0.12", default-features = false, features = ["blocking", "json", "rustls-tls"] }
 regex = "1.11"
+sevenz-rust = { path = "sevenz-rust", features=["compress","aes256"] }
 
 [build-dependencies]
 rustls = "0.23"

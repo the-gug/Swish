@@ -20,7 +20,8 @@ Arguments:
   <FILE>  could be a file or a folder or a link
 
 Options:
-  -p, --password <password>    Sets the password for the file(s) downloaded / uploaded
+  -p, --password <password>    Sets the password for the file(s) downloaded / uploaded (not encrypted)
+  -a, --aes-password <aes>     Define the password for derivating the AES encryption key for the file(s) uploaded (will be uploaded as a 7z encrypted)
   -m, --message <Hello World>  Define the message for the file(s) uploaded
   -n, --number-download <250>  Define the max number of downloads for the file(s) uploaded
   -d, --duration <30>          Define the number of days the file(s) will be available for download
@@ -43,6 +44,10 @@ Upload a file :rocket::
 Upload a file with a password :closed_lock_with_key:
 ```sh
 swish -p mypassword /tmo/super-file.pdf
+```
+Upload a encrypted file in a 7z archive :lock::
+```sh
+swish --aes-password mypassword /tmo/super-file.pdf
 ```
 Download a file :arrow_down::
 ```sh

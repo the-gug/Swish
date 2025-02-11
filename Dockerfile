@@ -2,9 +2,9 @@
 # Copyright 2024 SCTG Development - Ronan LE MEILLAT
 # SPDX-License-Identifier: AGPL-3.0-or-later
 FROM ubuntu:noble AS builder
-RUN apt-get update && apt-get install -y curl build-essential debhelper devscripts \
-                pkg-config libssl-dev \
-                zip git libcurl4-openssl-dev musl-dev musl-tools cmake 
+RUN apt-get update && apt-get install --no-install-recommends -y curl build-essential debhelper devscripts \
+                pkg-config libssl-dev libc-dev libstdc++-11-dev libgcc-11-dev \
+                zip git libcurl4-openssl-dev musl-dev musl-tools cmake libclang-dev g++
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y 
 RUN echo $(dpkg --print-architecture)
 RUN mkdir /build
@@ -26,6 +26,7 @@ RUN if [ "$(dpkg --print-architecture)" = "amd64" ]; then \
        . /root/.cargo/env && rustup target add x86_64-unknown-linux-musl; \
        echo "x86_64-unknown-linux-musl" > /build/_target ; \
     fi
+COPY sevenz-rust  /build/sevenz-rust
 COPY src /build/src
 COPY build.rs /build/build.rs
 COPY Cargo.toml /build/Cargo.toml
@@ -50,6 +51,5 @@ RUN --mount=type=tmpfs,target=/root/.cargo export TARGET=$(cat /build/_target) \
     && mkdir -p /build/ubuntu-jammy/bin \
     && cp /build/target/$(cat /build/_target)/release/swish /build/ubuntu-jammy/bin/ 
 
-# Note ubuntu:jammy is the based on Debian:bookworm so the deb packages and the binaried are compatible
 FROM ubuntu:noble
 COPY --from=builder /build/ubuntu-jammy/bin/swish /usr/local/bin/swish
