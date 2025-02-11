@@ -58,9 +58,9 @@ Download a file with a password :closed_lock_with_key::
 swish -p mypassword https://www.swisstransfer.com/d/188be047-5b8c-48bf-9c4a-e70076c0e53c
 ```
 
-This tool does not provide any encryption feature. :warning:
+The password option does not provide any encryption feature. :warning:
 
-I strongly recommend you to encrypt your file before uploading it to any cloud service :lock:
+I strongly recommend you to encrypt your file with the --aes-password option :lock:
 
 ## Known Issues
 ***File Upload Limit***
