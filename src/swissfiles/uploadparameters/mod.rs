@@ -6,7 +6,6 @@ pub struct UploadParameters {
     pub number_of_download: u16,
     pub lang: String,
     pub recipients_emails: Vec<String>,
-    pub aes_key: Option<String>,
 }
 
 impl Default for UploadParameters {
@@ -19,7 +18,6 @@ impl Default for UploadParameters {
             number_of_download: 250,
             lang: "en_GB".to_owned(),
             recipients_emails: Vec::new(),
-            aes_key: None,
         }
     }
 }
