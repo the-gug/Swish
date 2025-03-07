@@ -4,7 +4,6 @@ A Command Line Tool for [Infomaniak](https://www.swisstransfer.com/)'s SwissTran
 
 This project is not affiliated with Infomaniak and is not an official tool. :warning:
 
-
 ## Installation
 
 All the binaries are available in the [releases](https://github.com/sctg-development/Swish/releases) section. :inbox_tray:
@@ -38,23 +37,38 @@ Options:
 ### Examples
 
 Upload a file :rocket::
+
 ```sh
+
  swish /tmo/super-file.pdf
 ```
+
 Upload a file with a password :closed_lock_with_key:
+
 ```sh
+
 swish -p mypassword /tmo/super-file.pdf
+
 ```
+
 Upload a encrypted file in a 7z archive :lock::
+
 ```sh
+
 swish --aes-password mypassword /tmo/super-file.pdf
 ```
+
 Download a file :arrow_down::
+
 ```sh
+
 swish https://www.swisstransfer.com/d/188be047-5b8c-48bf-9c4a-e70076c0e53c
 ```
+
 Download a file with a password :closed_lock_with_key::
+
 ```sh
+
 swish -p mypassword https://www.swisstransfer.com/d/188be047-5b8c-48bf-9c4a-e70076c0e53c
 ```
 
@@ -63,6 +77,7 @@ The password option does not provide any encryption feature. :warning:
 I strongly recommend you to encrypt your file with the --aes-password option :lock:
 
 ## Known Issues
+
 ***File Upload Limit***
 
 When uploading many times the ***same*** file, it seems that infomaniaks servers flags you as suspicous traffic and you won't be able to upload for a while. It seems to be linked to your IP address, no extensive testing has been done. Use the debug mode to see the error message. :warning:
@@ -86,6 +101,3 @@ You can contact [Blutsh](https://github.com/Blutsh) at compote.interroge.0i@iclo
 ## Donate
 
 [Blutsh](https://github.com/Blutsh) drank some during the project, it would be nice if you could help him &nbsp;&nbsp;[![Buy a coffee for Blutsh](https://img.shields.io/badge/Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/Y8Y7ZK4DS)
-
-
-
